@@ -49,6 +49,7 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
                         const expiration = 864e5 * 365;
                         const o = new Date(Date.now() + expiration);
                         document.cookie = 'click_id=' + c + ';expires=' + o;
+                        document.cookie = 'aff_id=' + a + ';expires=' + o;
                     }
                 });
             }

@@ -1,6 +1,7 @@
 <?php
 $fpx = isset($_COOKIE['fpx']) ? $_COOKIE['fpx'] : null;
-$clickID = isset($_COOKIE['fpx']) ? $_COOKIE['click_id'] : null;
+$clickID = isset($_COOKIE['click_id']) ? $_COOKIE['click_id'] : null;
+$affID = isset($_COOKIE['aff_id']) ? $_COOKIE['aff_id'] : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +21,7 @@ $clickID = isset($_COOKIE['fpx']) ? $_COOKIE['click_id'] : null;
       font-weight: bold;
     }
   </style>
-   <?php if ($fpx) { ?>
+  <?php if ($fpx) { ?>
     <!-- Facebook Pixel Code -->
     <script>
       ! function(f, b, e, v, n, t, s) {
@@ -79,12 +80,13 @@ $orderInfo = [
   "ip" => trim($_SERVER["REMOTE_ADDR"]),
   "name" => trim($_POST["name"]),
   "phone" =>  trim($_POST["phone"]),
-  "click_id" => $_COOKIE["click_id"]
+  "click_id" => $clickID,
+  "aff_id" => $affID,
 ];
 
 $jsonData = json_encode($orderInfo);
 
-$url= "https://api.kost1.space/createlead";
+$url = "https://api.kost1.space/createlead";
 $curl = curl_init($url);
 
 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
@@ -101,4 +103,3 @@ curl_setopt(
 
 $response = curl_exec($curl);
 curl_close($curl);
-
