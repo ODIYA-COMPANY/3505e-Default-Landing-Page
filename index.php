@@ -716,6 +716,7 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
                 button.style.opacity = ".5"
                 const popapWrap = document.querySelector(".popap-wrap");
                 popapWrap.style.display = "flex";
+                form.submit();
             } else {
                 return;
             }
