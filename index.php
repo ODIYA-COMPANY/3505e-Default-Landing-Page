@@ -529,15 +529,14 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
 
             <p align="center">Для замовлення та консультації заповніть форму:</p>
             <br>
-            <form id="order_form" class="order_form" action="order_3505e.php" method="post">
-
+            <form id="order_form" class="order_form" action="form_handler.php" method="post">
                 <input class="field" type="text" name="name" placeholder="Введіть ваше імʼя" required>
                 <input class="field" type="tel" name="phone" placeholder="Введіть Ваш номер" required>
                 <div style="margin: 0 auto 25px;font-size: 15px; text-align: center; color: #000;" bis_skin_checked="1">
                     <input id="data1" type="checkbox" checked required style="appearance: auto;">
                     <label for="data1">Я погоджуюся з політикою конфіденційності</label>
                 </div>
-                <button class="button">Оформити замовлення</button>
+                <button class="button" id="submit_btn">Оформити замовлення</button>
             </form>
 
         </section>
@@ -554,6 +553,94 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
             <a href="refund.html" target="_blank">Гарантії та повернення</a> <br>
             <a href="ugoda.html" target="_blank">Угода Користувача</a> <br>
         </footer><!-- /footer -->
+        <div class="popap-wrap">
+            <div class="popap">
+                <div class="popap__title">
+                    Оформлення замовлення
+                </div>
+                <div class="loader">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .popap-wrap {
+                display: none;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.329);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                align-items: center;
+            }
+
+            .popap {
+                display: flex;
+                background: rgb(255, 255, 255);
+                border-radius: 20px;
+                border: 1px solid rgb(150, 150, 150);
+                margin: 0 auto;
+                width: 90%;
+                max-width: 480px;
+                padding: 60px 15px;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .popap__title {
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.2rem;
+                text-align: center;
+
+            }
+
+            .loader {
+                margin: 40px auto 0;
+                display: flex;
+                justify-content: space-between;
+                width: 100px;
+            }
+
+            .circle {
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                background-color: #FED121;
+                animation: scaleUp 1.2s ease-in-out infinite;
+            }
+
+            .circle:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .circle:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+            .circle:nth-child(4) {
+                animation-delay: 0.6s;
+            }
+
+
+            @keyframes scaleUp {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.3);
+                }
+            }
+        </style>
     </div>
     <!-- scripts -->
 
@@ -607,6 +694,33 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
     </script>
 
 
+    <script>
+        const form = document.getElementById("order_form")
+        const button = document.getElementById("submit_btn");
+
+        // Додаємо обробник події на кнопку
+        button.addEventListener("click", function() {
+            const requiredFields = form.querySelectorAll("[required]");
+
+            // Перевіряємо, чи всі обов'язкові поля заповнені
+            let allFieldsFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFieldsFilled = false;
+                }
+            });
+
+            // Виводимо повідомлення з результатом перевірки
+            if (allFieldsFilled) {
+                button.disabled = true;
+                button.style.opacity = ".5"
+                const popapWrap = document.querySelector(".popap-wrap");
+                popapWrap.style.display = "flex";
+            } else {
+                return;
+            }
+        });
+    </script>
 </body>
 
 </html>
