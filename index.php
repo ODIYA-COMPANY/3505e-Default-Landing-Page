@@ -25,9 +25,20 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
     <link rel="stylesheet" href="files/styles8ca58.css" type="text/css">
 
     <script>
+        function getCookie(name) {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.split('=');
+                if (cookieName === name) {
+                    return decodeURIComponent(cookieValue);
+                }
+            }
+            return null;
+        }
+
         function sclClickPixelFn() {
             const url = new URL(document.location.href).searchParams;
-            const a = url.get('a'); // Your ID. Example: const a = "XX";
+            const a = url.get('a') || getCookie('aff_id'); // Your ID. Example: const a = "XX";
             if (a) {
                 const availableParams = ['aff_click_id', 'sub_id1', 'sub_id2', 'sub_id3', 'sub_id4', 'sub_id5', 'aff_param1', 'aff_param2', 'aff_param3', 'aff_param4', 'aff_param5', 'idfa', 'gaid'];
                 const t = new URL('https://odiya.scaletrk.com/click');
