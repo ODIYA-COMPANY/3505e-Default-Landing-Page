@@ -5,7 +5,7 @@ $affID = isset($_COOKIE['aff_id']) ? $_COOKIE['aff_id'] : null;
 $name = $_POST['name'];
 $phone = $_POST['phone'];
 
-setcookie("click_id", "", time() - 3600, "/");
+setcookie("click_id", "", time() - 3600);
 
 function isVaildPhone($phone)
 {
