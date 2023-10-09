@@ -4,22 +4,19 @@
 // Для того щоб статично прописати ID партнера, змініть строчку нижче з коментарем "//Your ID"
 // Приклад:
 // Для партнера з ID = 1 правильно буде вказати наступний рядок
-// $aff_id = "1";
+// $aff_id = '1';
 
-$aff_id = isset($_GET['a']) ? $_GET['a'] : $_COOKIE['aff_id']; // Your ID;
+$aff_id = isset($_GET['a']) ? $_GET['a'] : $_COOKIE['aff_id'] ?? null; // Your ID;
 /*****************************************************************************************/
-$fpx = isset($_GET['fpx']) ? $_GET['fpx'] : $_COOKIE['fpx'];
-$gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
+$offer_id = '16';
+
+$fpx = isset($_GET['fpx']) ? $_GET['fpx'] : $_COOKIE['fpx'] ?? null;
+$gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'] ?? null;
 
 $period_cookie = 2592000;
-setcookie("aff_id", $aff_id, time() + $period_cookie);
-setcookie("fpx", $fpx, time() + $period_cookie);
-setcookie("gtm", $gtm, time() + $period_cookie);
-
-if ($_GET) {
-    setcookie("availableParams", json_encode($_GET), time() + $period_cookie);
-}
-
+($aff_id) ? setcookie("aff_id", $aff_id, time() + $period_cookie) : 0;
+($fpx) ? setcookie("fpx", $fpx, time() + $period_cookie) : 0;
+($gtm) ? setcookie("gtm", $gtm, time() + $period_cookie) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="ru-RU">
@@ -509,6 +506,8 @@ if ($_GET) {
                 <input class="field" type="text" name="name" placeholder="Введіть ваше імʼя" required>
                 <input class="field" type="tel" name="phone" placeholder="Введіть Ваш номер" required>
                 <input type="hidden" name="aff_id" value="<?= $aff_id ?>">
+                <input type="hidden" name="offer_id" value="<?= $offer_id ?>">
+                <input type="hidden" name="click_id" id="click_id">
                 <div style="margin: 0 auto 25px;font-size: 15px; text-align: center; color: #000;" bis_skin_checked="1">
                     <input id="data1" type="checkbox" checked required style="appearance: auto;">
                     <label for="data1">Я погоджуюся з політикою конфіденційності</label>
@@ -698,6 +697,36 @@ if ($_GET) {
                 return;
             }
         });
+    </script>
+
+    <script>
+        function sclClickPixelFn(aff_id = null, offer_id = null) {
+            const url = new URL(document.location.href).searchParams;
+            if (aff_id) {
+                const availableParams = ['aff_click_id', 'sub_id1', 'sub_id2', 'sub_id3', 'sub_id4', 'sub_id5', 'aff_param1', 'aff_param2', 'aff_param3', 'aff_param4', 'aff_param5', 'idfa', 'gaid'];
+                const t = new URL('https://odiya.scaletrk.com/click');
+                const r = t.searchParams;
+                r.append('a', aff_id);
+                r.append('o', offer_id);
+                r.append('return', 'click_id');
+                if (availableParams?.length > 0) {
+                    availableParams.forEach((key) => {
+                        const value = url.get(key);
+                        if (value) {
+                            r.append(key, value);
+                        }
+                    });
+                }
+                fetch(t.href).then((e) => e.json()).then((e) => {
+                    const c = e.click_id;
+                    if (c) {
+                        document.getElementById("click_id").value = c;
+                        console.log(c);
+                    }
+                });
+            }
+        }
+        sclClickPixelFn("<?= $aff_id ?>", "<?= $offer_id ?>");
     </script>
 </body>
 

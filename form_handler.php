@@ -1,7 +1,9 @@
 <?php
 $name  = trim($_POST["name"]);
 $phone = trim($_POST["phone"]);
-$aff_id = isset($_POST["aff_id"]) ? $_POST["aff_id"] : $_COOKIE['aff_id'];
+$aff_id = isset($_POST["aff_id"]) ? $_POST["aff_id"] : $_COOKIE['aff_id'] ?? null;
+$offer_id = isset($_POST["offer_id"]) ? $_POST["offer_id"] : $_COOKIE['offer_id'] ?? null;
+$click_id = isset($_POST["click_id"]) ? $_POST["click_id"] : null;
 
 function isVaildPhone($phone)
 {
@@ -30,11 +32,11 @@ function isSpam($phone)
 };
 
 $orderInfo = [
-  "offer_id"        => "16",
+  "offer_id"        => $offer_id,
   "name"            => $name,
   "phone"           => $phone,
   "aff_id"          => $aff_id ?? null,
-  "availableParams" => json_decode($_COOKIE['availableParams'], 1) ?? null,
+  "click_id"        => $click_id ?? null,
   "server_info"     => $_SERVER
 ];
 
