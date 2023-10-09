@@ -1,16 +1,26 @@
 <?php
-$period_cookie = 2592000; // 30 дней (2592000 секунд)
 
-if ($_GET) {
-    setcookie("fpx", $_GET['fpx'], time() + $period_cookie);
-    setcookie("gtm", $_GET['gtm'], time() + $period_cookie);
-}
+/********************************* Ваш ІД ************************************************/
+// Для того щоб статично прописати ID партнера, змініть строчку нижче з коментарем "//Your ID"
+// Приклад:
+// Для партнера з ID = 1 правильно буде вказати наступний рядок
+// $aff_id = "1";
 
+$aff_id = isset($_GET['a']) ? $_GET['a'] : $_COOKIE['aff_id']; // Your ID;
+/*****************************************************************************************/
 $fpx = isset($_GET['fpx']) ? $_GET['fpx'] : $_COOKIE['fpx'];
 $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
 
-?>
+$period_cookie = 2592000;
+setcookie("aff_id", $aff_id, time() + $period_cookie);
+setcookie("fpx", $fpx, time() + $period_cookie);
+setcookie("gtm", $gtm, time() + $period_cookie);
 
+if ($_GET) {
+    setcookie("availableParams", json_encode($_GET), time() + $period_cookie);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ru-RU">
 
@@ -23,51 +33,6 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
     <link rel="icon" href="files/favicon.png">
     <link rel="stylesheet" href="files/reset4a3c6.css" type="text/css">
     <link rel="stylesheet" href="files/styles8ca58.css" type="text/css">
-
-    <script>
-        function getCookie(name) {
-            const cookies = document.cookie.split('; ');
-            for (const cookie of cookies) {
-                const [cookieName, cookieValue] = cookie.split('=');
-                if (cookieName === name) {
-                    return decodeURIComponent(cookieValue);
-                }
-            }
-            return null;
-        }
-
-        function sclClickPixelFn() {
-            const url = new URL(document.location.href).searchParams;
-            const a = url.get('a') || getCookie('aff_id'); // Your ID. Example: const a = "XX";
-            if (a) {
-                const availableParams = ['aff_click_id', 'sub_id1', 'sub_id2', 'sub_id3', 'sub_id4', 'sub_id5', 'aff_param1', 'aff_param2', 'aff_param3', 'aff_param4', 'aff_param5', 'idfa', 'gaid'];
-                const t = new URL('https://odiya.scaletrk.com/click');
-                const r = t.searchParams;
-                r.append('a', a);
-                r.append('o', '16');
-                r.append('return', 'click_id');
-                if (availableParams?.length > 0) {
-                    availableParams.forEach((key) => {
-                        const value = url.get(key);
-                        if (value) {
-                            r.append(key, value);
-                        }
-                    });
-                }
-                fetch(t.href).then((e) => e.json()).then((e) => {
-                    const c = e.click_id;
-                    if (c) {
-                        const expiration = 864e5 * 365;
-                        const o = new Date(Date.now() + expiration);
-                        document.cookie = 'click_id=' + c + ';expires=' + o;
-                        document.cookie = 'aff_id=' + a + ';expires=' + o;
-                    }
-                });
-            }
-        }
-        sclClickPixelFn();
-    </script>
-
     <?php if ($fpx) { ?>
         <!-- Facebook Pixel Code -->
         <script>
@@ -543,6 +508,7 @@ $gtm = isset($_GET['gtm']) ? $_GET['gtm'] : $_COOKIE['gtm'];
             <form id="order_form" class="order_form" action="form_handler.php" method="post">
                 <input class="field" type="text" name="name" placeholder="Введіть ваше імʼя" required>
                 <input class="field" type="tel" name="phone" placeholder="Введіть Ваш номер" required>
+                <input type="hidden" name="aff_id" value="<?= $aff_id ?>">
                 <div style="margin: 0 auto 25px;font-size: 15px; text-align: center; color: #000;" bis_skin_checked="1">
                     <input id="data1" type="checkbox" checked required style="appearance: auto;">
                     <label for="data1">Я погоджуюся з політикою конфіденційності</label>
